@@ -34,3 +34,14 @@ void initGLAttributes(int glMajorVersion, int glMinorVersion, int useDoubleBuffe
 	//Use double buffer
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, useDoubleBuffering);
 }
+
+/*
+Call when program is done
+*/
+void tearDown(SDL_Window*& window) {
+	SDL_GL_DeleteContext(window);
+	SDL_DestroyWindow(window);
+
+	// Clean up SDL
+	SDL_Quit();
+}
