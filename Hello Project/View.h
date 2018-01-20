@@ -4,13 +4,31 @@
 #include "SDL.h"
 #include "Model.h"
 #include "glew.h"
+#include <fstream>
+#include <string>
+#include <iostream>
 
 class View {
 private:
+	GLuint triangle_settings;
+	GLuint triangle_buffer;
+	GLuint color_buffer;
+	GLuint shader_program;
+	GLuint vertex_shader;
+	GLuint fragment_shader;
+	GLuint element_buffer;
+
 	Model& model;
 public:
 	View(Model& model);
 	void render(SDL_Window* window);
 };
+
+
+//
+//Utilities
+//
+GLuint LoadShader(std::string shader_file_name, GLenum shader_type);
+void CheckLinkStatus(GLuint& shader_program);
 
 #endif
