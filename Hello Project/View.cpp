@@ -24,6 +24,8 @@ View::View(Model& model) :model(model) {
 	glGenVertexArrays(1, &triangle_settings);
 	glBindVertexArray(triangle_settings);
 
+	glEnable(GL_DEPTH_TEST);
+
 	float triangle_data[] = {
 		-0.5, -0.5, 0, 1.0, 0, 0,
 		0.5, -0.5, 0, 1.0, 0, 0,
@@ -44,13 +46,38 @@ View::View(Model& model) :model(model) {
 	GLint color_in_attribute = glGetAttribLocation(shader_program, "color_input");
 	glVertexAttribPointer(color_in_attribute, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(color_in_attribute);
+
+	mvp_uniform_attribute = glGetUniformLocation(shader_program, "mvp");
 }
 
 void View::render(SDL_Window* window) {
+	using glm::vec3;
+	using glm::mat4;
 	glClearColor(model.background_color[0],
 		model.background_color[1], model.background_color[2], model.background_color[3]);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	camera.updateViewMatrix();
+
+	vec3 scaling(1.0f, 1.0f, 1.0f);
+	vec3 translation(-0.5f, 0, 0.1f);
+	vec3 rotation_axis(1.0f, 0, 0);
+	float rotation_angle = 0;
+	mat4 model_matrix = glm::translate(glm::rotate(glm::scale(
+		mat4(1.0f), scaling), rotation_angle, rotation_axis), translation);
+
+	mat4 model_view_projection = camera.projection_matrix*camera.view_matrix*model_matrix;
+
+	glUniformMatrix4fv(mvp_uniform_attribute, 1, GL_FALSE, &model_view_projection[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	translation = vec3(0.5f, 0, -0.1f);
+	model_matrix = glm::translate(glm::rotate(glm::scale(
+		mat4(1.0f), scaling), rotation_angle, rotation_axis), translation);
+
+	model_view_projection = camera.projection_matrix*camera.view_matrix*model_matrix;
+
+	glUniformMatrix4fv(mvp_uniform_attribute, 1, GL_FALSE, &model_view_projection[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	glFlush();

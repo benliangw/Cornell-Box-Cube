@@ -1,9 +1,8 @@
-﻿  View.cpp
-e:\学习\计算机图形学\project\hello project\hello project\view.cpp(51): warning C4244: “参数”: 从“double”转换到“GLclampf”，可能丢失数据
+﻿  Camera.cpp
   正在生成代码...
-  正在编译...
+  正在跳过...(未检测到相关更改)
+  View.cpp
   Main.cpp
-  正在生成代码...
-LINK : warning LNK4031: 未指定子系统；已假定为 CONSOLE
+  Control.cpp
   Hello Project.vcxproj -> E:\学习\计算机图形学\Project\Hello Project\Debug\Hello Project.exe
   Hello Project.vcxproj -> E:\学习\计算机图形学\Project\Hello Project\Debug\Hello Project.pdb (Partial PDB)

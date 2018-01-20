@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
 
 	Model model;
 	View view(model);
-	Control control(model);
+	Control control(model, view);
 
 
 	const double dt = 10;

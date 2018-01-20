@@ -4,12 +4,16 @@
 #include "SDL.h"
 #include "Model.h"
 #include "glew.h"
+#include "Camera.h"
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
 
 class View {
 private:
+	GLuint mvp_uniform_attribute;
 	GLuint triangle_settings;
 	GLuint triangle_buffer;
 	GLuint color_buffer;
@@ -21,6 +25,7 @@ private:
 	Model& model;
 public:
 	View(Model& model);
+	Camera camera;
 	void render(SDL_Window* window);
 };
 

@@ -69,11 +69,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\学习\计算机图形学\Project\glew-1.13.0\include\GL;E:\学习\计算机图形学\Project\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\学习\计算机图形学\Project\glew-1.13.0\include\GL;E:\学习\计算机图形学\Project\SDL2-2.0.4\include;E:\学习\计算机图形学\Project\glm-0.9.8.5\glm;$(IncludePath)</IncludePath>
     <LibraryPath>E:\学习\计算机图形学\Project\SDL2-2.0.4\lib\x86;E:\学习\计算机图形学\Project\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\学习\计算机图形学\Project\glew-1.13.0\include\GL;E:\学习\计算机图形学\Project\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
+    <IncludePath>E:\学习\计算机图形学\Project\glew-1.13.0\include\GL;E:\学习\计算机图形学\Project\SDL2-2.0.4\include;E:\学习\计算机图形学\Project\glm-0.9.8.5\glm;$(IncludePath)</IncludePath>
     <LibraryPath>E:\学习\计算机图形学\Project\SDL2-2.0.4\lib\x86;E:\学习\计算机图形学\Project\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="GLInit.h" />
     <ClInclude Include="Main.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="View.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="GLInit.cpp" />
     <ClCompile Include="Main.cpp" />
