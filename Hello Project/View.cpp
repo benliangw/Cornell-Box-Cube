@@ -24,6 +24,8 @@ View::View(Model& model) :model(model) {
 	glUseProgram(shader_program);
 
 	mvp_uniform_attribute = glGetUniformLocation(shader_program, "mvp");
+	light_position_uniform_attribute = glGetUniformLocation(shader_program, "light_position");
+	camera_position_uniform_attribute = glGetUniformLocation(shader_program, "camera_position");
 
 	scene_loader = new SceneLoader(*this);
 }
@@ -38,6 +40,9 @@ void View::render(SDL_Window* window) {
 	glm::mat4 model_view_projection = camera.projection_matrix*camera.view_matrix;
 
 	glUniformMatrix4fv(mvp_uniform_attribute, 1, GL_FALSE, &model_view_projection[0][0]);
+	glUniform3fv(light_position_uniform_attribute, 1, &light_position[0]);
+	glUniform3fv(camera_position_uniform_attribute, 1, &camera.position[0]);
+	
 	glDrawArrays(GL_TRIANGLES, 0, scene_loader->number_of_vertices_in_scene);
 
 	glFlush();
@@ -92,20 +97,25 @@ void View::SceneLoader::loadBlock(const Block& block) {
 }
 
 void View::SceneLoader::loadRectangle(const Rectangle& rectangle) {
-	loadRectangleVertex(0, rectangle);
-	loadRectangleVertex(1, rectangle);
-	loadRectangleVertex(2, rectangle);
-	loadRectangleVertex(0, rectangle);
-	loadRectangleVertex(2, rectangle);
-	loadRectangleVertex(3, rectangle);
+	glm::vec3 rectangle_normal = glm::normalize(glm::cross(
+		(rectangle[0] - rectangle[1]), rectangle[0] - rectangle[2]));
+	loadRectangleVertex(0, rectangle, rectangle_normal);
+	loadRectangleVertex(1, rectangle, rectangle_normal);
+	loadRectangleVertex(2, rectangle, rectangle_normal);
+	loadRectangleVertex(0, rectangle, rectangle_normal);
+	loadRectangleVertex(2, rectangle, rectangle_normal);
+	loadRectangleVertex(3, rectangle, rectangle_normal);
 }
 
-void View::SceneLoader::loadRectangleVertex(const int& vertex_number, const Rectangle& rectangle) {
+void View::SceneLoader::loadRectangleVertex(const int& vertex_number, const Rectangle& rectangle, const glm::vec3& vertex_normal) {
 	for (size_t j = 0; j < 3; j++) {
 		rectangle_data_vector.push_back(rectangle[vertex_number][j]);
 	}
 	for (size_t i = 0; i < 3; i++) {
 		rectangle_data_vector.push_back(rectangle.RGB_color[i]);
+	}
+	for (size_t i = 0; i < 3; i++) {
+		rectangle_data_vector.push_back(vertex_normal[i]);
 	}
 }
 
@@ -131,13 +141,18 @@ View::SceneLoader::SceneLoader(View& view) :view(view) {
 	delete[] rectangle_data_array;
 
 	GLint vertex_position_attrib = glGetAttribLocation(view.shader_program, "vertex_position");
-	glVertexAttribPointer(vertex_position_attrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+	glVertexAttribPointer(vertex_position_attrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), 0);
 	glEnableVertexAttribArray(vertex_position_attrib);
 
-	GLint texture_coordinate_attrib = glGetAttribLocation(view.shader_program, "color_input");
-	glVertexAttribPointer(texture_coordinate_attrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+	GLint color_input_attribute = glGetAttribLocation(view.shader_program, "color_input");
+	glVertexAttribPointer(color_input_attribute, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float),
 		(void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(texture_coordinate_attrib);
+	glEnableVertexAttribArray(color_input_attribute);
+
+	GLint vertex_normal_attribute = glGetAttribLocation(view.shader_program, "vertex_normal_in");
+	glVertexAttribPointer(vertex_normal_attribute, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float),
+		(void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(vertex_normal_attribute);
 }
 
 View::~View() {
